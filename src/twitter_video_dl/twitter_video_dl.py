@@ -32,7 +32,7 @@ def get_tokens(tweet_url):
     """
 
     
-    html = requests.get(tweet_url)
+    html = requests.get(tweet_url, headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0'})
 
     assert html.status_code == 200, f'Failed to get tweet page.  If you are using the correct Twitter URL this suggests a bug in the script.  Please open a GitHub issue and copy and paste this message.  Status code: {html.status_code}.  Tweet url: {tweet_url}'
 
@@ -79,9 +79,9 @@ def get_tokens(tweet_url):
 def get_details_url(tweet_id, features, variables):
     # create a copy of variables - we don't want to modify the original
     variables = {**variables}
-    variables['focalTweetId'] = tweet_id
+    variables['tweetId'] = tweet_id
 
-    return f"https://twitter.com/i/api/graphql/wTXkouwCKcMNQtY-NcDgAA/TweetDetail?variables={urllib.parse.quote(json.dumps(variables))}&features={urllib.parse.quote(json.dumps(features))}"
+    return f"https://api.twitter.com/graphql/8be30APApp7lds22UzVS7Q/TweetResultByRestId?variables={urllib.parse.quote(json.dumps(variables))}&features={urllib.parse.quote(json.dumps(features))}"
 
 
 def get_tweet_details(tweet_url, guest_token, bearer_token):
@@ -96,6 +96,7 @@ def get_tweet_details(tweet_url, guest_token, bearer_token):
     url = get_details_url(tweet_id, features, variables)
 
     details = requests.get(url, headers={
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0',
         'authorization': f'Bearer {bearer_token}',
         'x-guest-token': guest_token,
     })
@@ -126,6 +127,7 @@ def get_tweet_details(tweet_url, guest_token, bearer_token):
         url = get_details_url(tweet_id, features, variables)
 
         details = requests.get(url, headers={
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
             'authorization': f'Bearer {bearer_token}',
             'x-guest-token': guest_token,
         })
